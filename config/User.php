@@ -293,14 +293,27 @@ class User{
     }
     //end of the function
 
+        public function update($data){
 
+            try{
+            $oldPassword = $data['oldPassword'];
+            $newPassword = $data['newPassword'];
 
+            $query = "UPDATE admin SET pass = :newPass WHERE pass = :oldPass";
+            $query = $this->db->conn->prepare($query);
+            $query->bindValue(":newPass",$newPassword);
+            $query->bindValue(":oldPass",$oldPassword);
+            $query->execute();
+            }catch(PDOException $e){
+                echo $e->getMessage();
 
+            }
 
+            return "Sucess";
 
+                          
 
-
-
+        }
 
 }
 

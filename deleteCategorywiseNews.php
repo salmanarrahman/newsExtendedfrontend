@@ -1,8 +1,10 @@
 <?php
 include_once "config/User.php";
 include_once "config/Database.php";
+
 $db = new Database();
 $user = new User();
+
 session_start();
 
 if (isset($_GET['id'])){

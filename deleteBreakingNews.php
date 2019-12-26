@@ -1,6 +1,9 @@
 <?php
 include_once "config/User.php";
 include_once "config/Database.php";
+include_once "mySession.php";
+
+  
 $db = new Database();
 $user = new User();
 session_start();
@@ -16,10 +19,6 @@ if(isset($_POST["deleteButton"])){
     //deleteDate($dateid);
 
     try {
-
-
-
-
         $sql = "DELETE FROM breakingnews WHERE id = :id";
         $query = $db->conn->prepare($sql);
         $query->bindValue(':id',$categoryid);

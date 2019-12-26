@@ -1,8 +1,10 @@
 <?php
 include_once "config/User.php";
 include_once "config/Database.php";
+
 $db = new Database();
 $user = new User();
+
 session_start();
 
 if (isset($_GET['id'])){
@@ -18,6 +20,10 @@ if(isset($_POST["deleteButton"])){
     try {
 
 
+        $sqlQuery = "DELETE FROM categorywisenews WHERE categoryid = :id";
+        $runQuery = $db->conn->prepare($sqlQuery);
+        $runQuery->bindValue(":id",$categoryid);
+        $runQuery->execute();
 
 
         $sql = "DELETE FROM categories WHERE categoryid = :id";

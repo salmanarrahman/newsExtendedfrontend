@@ -2,6 +2,10 @@
   include_once "config/User.php"; 
   include_once "config/Database.php";
   session_start();
+  if($_SESSION['login'] == false){
+    header("Location: login.php");
+  }
+  
 
   $db = new Database();
   $user = new User();
@@ -32,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addAllButton'])){
 
         move_uploaded_file($file_temp, $uploaded_image);
         $addAllData = $user->addAll($_POST, $uploaded_image);
+        header("Location: categorywisenews.php");
 
     }
 }
@@ -83,13 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addAllButton'])){
     </ul>
   </div>
 </nav>
-<?php
 
-echo $var_value = $_SESSION['varname'] . "</br>";
-$dateid = $_SESSION['dateid'];
-
-echo $dateid;
- ?>
 <div class="row clearfix">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card pl-5 pr-5 pt-5">
@@ -177,7 +176,7 @@ echo $dateid;
 
             $sql = "SELECT * FROM categorywisenews where dateid = :datee";
             $query = $db->conn->prepare($sql);
-            $query->bindValue(":datee",$dateid);
+            $query->bindValue(":datee",$_SESSION['dateid']);
             $query->execute();
             $query->setFetchMode(PDO::FETCH_ASSOC);
              while ($row = $query->fetch()){

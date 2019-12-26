@@ -1,9 +1,24 @@
 <?php
 include_once "config/User.php";
 include_once "config/Database.php";
+include_once "mySession.php";
 $db = new Database();
 $user = new User();
 session_start();
+
+$oldpassword = "";
+
+if($_SESSION['login'] == false){
+  header("Location: login.php");
+}
+
+if(isset($_GET['action']) && $_GET['action'] == "logout"){
+  session_destroy();
+  header("Location: login.php");
+}
+
+
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -22,57 +37,70 @@ session_start();
   <!--nav started-->
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="home.php">News Extended</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+ <a class="navbar-brand" href="#">
+    <img src="resources/logo.png" width="35" height="35" class="d-inline-block align-top" alt="">
+    News Extended
+  </a> 
+
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item ">
-        <a class="nav-link" href="categories.php">Manage Category <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="recentnews.php">Add News</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="trendingnews.php">Trending</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link " href="breakingnews.php">Breaking News</a>
-      </li>
-       <li class="nav-item">
-        <a class="nav-link " href="videomanager.php">Video Manager</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link " href="#">Notification</a>
+        <a class="nav-link" href="date.php">Change Date<span class="sr-only">(current)</span></a>
       </li>
     </ul>
+  </div> 
 
-    <div class="navbar-collapse pr-xl-5">
-        <ul class="navbar-nav ml-auto">
-        <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle dropleft" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-         aria-haspopup="true" aria-expanded="false">
-          Config
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="login.php">Sign Out</a>        
-             <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#myModal">Change Password</a>
-        </div>
-      </li>
-        </ul>
-    </div>
-  
+  <div class="btn-group dropleft">
+  <button type="button" class="btn  dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+   Config
+  </button>
+  <div class="dropdown-menu">
+    <button class="dropdown-item" type="button" data-toggle="modal" data-target="#myModal">Change Password</button>
+    <a href="?action=logout" class="dropdown-item" type="button">Logout</a>
+   
 
+    
   </div>
+  </div>
+
 </nav>
-  <?php  ?>
+  <?php
+  
+  if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save'])){
+
+
+    $oldpassword = $_POST['oldPassword'];
+  
+    try{
+              
+    
+      $sql = "SELECT pass FROM admin WHERE pass = :passwoord";
+      $query = $db->conn->prepare($sql);
+      $query->bindValue(':passwoord',$oldpassword);
+       $query->execute();
+  
+      if ($query->rowCount() == 0){
+          echo "<div class=\"alert alert-danger\" role=\"alert\">Old Password doesn't exist</div>";
+      }else{
+        $updatePass = $user->update($_POST);
+        header("location: home.php");
+        echo "changed";
+  
+  
+      }
+      }catch(PDOException $e){
+          echo $e->getMessage();
+  
+      }
+  
+  }
+  
+  ?>
 
   <!--nav finished-->
 
 <?php
-
+/*
     $fromDatePage = $_SESSION['selectedDate'];
 
  if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['savechanges'])){
@@ -106,11 +134,6 @@ session_start();
 
   }else{
      try{
-
-
-
-
-
          $sql = "SELECT dateid FROM dates where date_ = :datee";
          $query = $db->conn->prepare($sql);
          $query->bindValue(':datee',  $fromDatePage);
@@ -129,19 +152,22 @@ session_start();
      }
 
  }
+ */
 
   ?>
 
 <div >
   <h1 class="text-lg-center display-1">Welcome</h1>
+  <h6 class="text-sm-center ">Selected date is <?php echo $_SESSION['selectedDate'];?></h6>
 </div>
+<!--
  <form method="post" action="">
   <div class="ml-2">
 
       <select required="true" class="ml-4"  name="date">
 
         <?php
-
+/*
           try{
 
               $sql = "SELECT * FROM dates";
@@ -153,9 +179,6 @@ session_start();
                   $data = htmlspecialchars($row['date_']);
                   echo " <option >" . $data . "</option>";
               }
-
-
-
               if ($_SERVER['REQUEST_METHOD'] == 'POST' &&   isset($_POST['savechanges'])){
                   echo "<option selected>$welcomeText</option>";
               }else{
@@ -166,7 +189,7 @@ session_start();
               echo $e->getMessage();
           }
 
-
+*/
           ?>
 
       </select>
@@ -177,7 +200,7 @@ session_start();
    </div>
 
 
-  </form>
+  </form> -->
 
 
 
@@ -300,29 +323,35 @@ session_start();
       </div>
 
       <!-- Modal body -->
+
+ 
+      <form action="" method="post" >
       <div class="form-group pt-3" align="center">
 
 
       <div>
-      <input type="password" class="form-control" style="width:300px;" id="exampleInputEmail1"
+      <input required="true" type="password" class="form-control" style="width:300px;" id="oldPassword" name="oldPassword"
        aria-describedby="emailHelp" placeholder="Old Password">
       </div>
 
       <div class="pt-3">
-      <input type="password" class="form-control" style="width:300px;" id="exampleInputEmail1"
+      <input required="true" type="password" class="form-control" style="width:300px;" id="newPassword" name="newPassword"
        aria-describedby="emailHelp" placeholder="New Password">
       </div>
    
   </div>
+ 
 
       <!-- Modal footer -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-dark" data-dismiss="modal">Save</button>
+        <button type="submit" class="btn btn-dark"  name="save" id="save">Save</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 
       </div>
+      </form>
 
     </div>
+   
   </div>
 </div>
 
@@ -333,3 +362,15 @@ session_start();
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   </body>
 </html>
+
+<?php
+
+/*
+if(isset($_GET['action']) && $_GET['action'] == "signout"){
+  session_destroy();
+  header("Location: login.php");
+}
+
+*/
+
+?>

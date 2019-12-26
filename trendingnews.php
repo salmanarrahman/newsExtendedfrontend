@@ -2,7 +2,9 @@
 include_once "config/User.php";
 include_once "config/Database.php";
 session_start();
-
+if($_SESSION['login'] == false){
+  header("Location: login.php");
+}
 $db = new Database();
 $user = new User();
 ?>
@@ -48,14 +50,7 @@ $user = new User();
   </div>
 </nav>
 
-  <?php
 
-  echo $var_value = $_SESSION['varname'] . "</br>";
-  $dateid = $_SESSION['dateid'];
-
-  echo $dateid;
-
-  ?>
 
 
   <?php
@@ -83,7 +78,7 @@ $user = new User();
 
           move_uploaded_file($file_temp, $uploaded_image_from_trendingnews_image);
           $addAllData = $user->addAllTrendingNews($_POST, $uploaded_image_from_trendingnews_image);
-
+          header("location: trendingnews.php");
 
       //}
   }
@@ -185,7 +180,7 @@ $user = new User();
 
                                         $sql = "SELECT * FROM trendingnews where dateid = :datee";
                                         $query = $db->conn->prepare($sql);
-                                        $query->bindValue(":datee",$dateid);
+                                        $query->bindValue(":datee",$_SESSION['dateid']);
                                         $query->execute();
                                         $query->setFetchMode(PDO::FETCH_ASSOC);
                                         while ($row = $query->fetch()){

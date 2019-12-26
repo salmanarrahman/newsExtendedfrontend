@@ -1,6 +1,11 @@
 <?php
 include_once "config/User.php";
 include_once "config/Database.php";
+session_start();
+if($_SESSION['login'] == false){
+  header("Location: login.php");
+}
+
 
 
 $db = new Database();

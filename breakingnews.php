@@ -1,9 +1,13 @@
 <?php
 include_once "config/User.php";
 include_once "config/Database.php";
+session_start();
+if($_SESSION['login'] == false){
+  header("Location: login.php");
+}
+
 $db = new Database();
 $user = new User();
-session_start();
 
 ?>
 <!doctype html>
@@ -75,6 +79,7 @@ session_start();
 
       move_uploaded_file($file_temp, $uploaded_image_from_trendingnews_image);
       $addAllData = $user->addAllBreakingNews($_POST, $uploaded_image_from_trendingnews_image);
+      header("location: breakingnews.php");
 
 
       //}

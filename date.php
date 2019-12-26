@@ -1,9 +1,12 @@
 <?php
 include_once "config/User.php";
 include_once "config/Database.php";
+session_start();
+
 $db = new Database();
 $user = new User();
-session_start();
+
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -31,15 +34,40 @@ session_start();
 
 <?php
 
+if($_SESSION['login'] != true){
+
+    header("Location: login.php");
+   
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['savechanges'])){
 
     $date = $_POST['date'];
     $_SESSION['selectedDate'] = $date;
 
+
+    //lets set the date id as session
+    try{
+
+        $sql = "SELECT dateid FROM dates where date_ = :date";
+        $query = $db->conn->prepare($sql);
+        $query->bindValue(':date', $date);
+        $query->execute();
+        $query->setFetchMode(PDO::FETCH_ASSOC);
+        while ($row = $query->fetch()) {
+
+            $dateid = htmlspecialchars($row['dateid']);
+
+        }
+        //put date id in a session !
+        $_SESSION['dateid'] = $dateid;
+
+    }catch (PDOException $e){
+        echo $e->getMessage();
+    }
+
+
     header("Location: home.php");
-
-
-
 }
 ?>
 

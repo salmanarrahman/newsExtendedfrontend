@@ -5,6 +5,7 @@ $db = new Database();
 $user = new User();
 session_start();
 
+  
 if (isset($_GET['id'])){
     $_SESSION['ID'] =  $_GET['id'];
 }

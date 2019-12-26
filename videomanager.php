@@ -1,4 +1,15 @@
+<?php
+ session_start();
+ if($_SESSION['login'] == false){
+   header("Location: login.php");
+ }
+
+
+?>
+
+
 <!doctype html>
+
 <html lang="en">
   <head>
     <!-- Required meta tags -->
