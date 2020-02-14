@@ -199,6 +199,34 @@ class User{
 
     }
 
+
+
+    public function videoInfo($data,$photo){
+
+        $dateid = $_SESSION['dateid'];
+        $videoaddress = $data['videoAddress'];
+        $title  = $data['videoTitle'];
+        $cameraman = $data['cameraman'];
+        $news  = $data['news'];
+        $thumbnail = $photo;
+
+                try {
+                    $sql = "insert into video (videoaddress,title,cameraman,news,thumbnail,dateid)
+                                 values(:videoaddress, :title,:cameraman,:news,:thumbnail,".$dateid  ." )";
+                    $query = $this->db->conn->prepare($sql);
+                    $query->bindValue(':videoaddress', $videoaddress);
+                    $query->bindValue(':title', $title);
+                    $query->bindValue(":cameraman", $cameraman);
+                    $query->bindValue(":news", $news);
+                    $query->bindValue(':thumbnail', $thumbnail);
+                    $query->execute();
+                }catch (PDOException $e){
+                    echo $e->getMessage();
+                }
+
+            }
+
+
     public function addAllTrendingNews($data,$photo){
 
         $dateid = $_SESSION['dateid'];

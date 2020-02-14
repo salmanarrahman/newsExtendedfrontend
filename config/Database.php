@@ -1,12 +1,20 @@
 <?php
 
     class Database{
+/*
+        private $host = 'localhost';
+        private $username = 'iamsalma_salman';
+        private $db_name = 'iamsalma_newsex';
+        private $password = 'salman2691981';
+        public  $conn; */
 
         private $host = 'localhost';
         private $username = 'root';
         private $db_name = 'newsextended';
         private $password = '';
         public  $conn;
+
+
 
         //db connect
         public function __construct(){

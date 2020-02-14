@@ -91,9 +91,7 @@ $user = new User();
   <tbody>
 
   <?php
-
    try{
-
             $sql = "SELECT * FROM categories";
             $query = $db->conn->prepare($sql);
             $query->execute();
@@ -114,9 +112,6 @@ $user = new User();
             catch (PDOException $e){
              echo $e->getMessage();
         }
-
-
-
   ?>
 
 
