@@ -16,10 +16,58 @@ if(isset($_GET['action']) && $_GET['action'] == "logout"){
   session_destroy();
   header("Location: login.php");
 }
-
-
-
 ?>
+
+
+<?php
+        // Enabling error reporting
+        error_reporting(-1);
+        ini_set('display_errors', 'On');
+
+        require_once __DIR__ . '/firebase/firebase.php';
+        require_once __DIR__ . '/firebase/push.php';
+
+        $firebase = new Firebase();
+        $push = new Push();
+
+        // optional payload
+        $payload = array();
+        $payload['appname'] = 'newsx';
+        $payload['author'] = 'salman';
+
+        // notification title
+        $title = isset($_GET['title']) ? $_GET['title'] : '';
+        
+        // notification message
+        $message = isset($_GET['message']) ? $_GET['message'] : '';
+        
+        // push type - single user / topic
+        $push_type = isset($_GET['push_type']) ? $_GET['push_type'] : '';
+        
+      
+
+
+        $push->setTitle($title);
+        $push->setMessage($message);
+   
+            $push->setImage('');
+      
+        $push->setIsBackground(FALSE);
+        $push->setPayload($payload);
+
+
+        $json = '';
+        $response = '';
+
+        if ($push_type == 'topic') {
+            $json = $push->getPush();
+            $response = $firebase->sendToTopic('global', $json);
+            header("Location: home.php");
+            
+        } 
+        ?>
+
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -47,9 +95,13 @@ if(isset($_GET['action']) && $_GET['action'] == "logout"){
       <li class="nav-item ">
         <a class="nav-link" href="date.php">Change Date<span class="sr-only">(current)</span></a>
       </li>
+      <li class="nav-item ">
+      <a class="nav-link" data-toggle="modal" data-target="#notificationModal">Send Notification<span class="sr-only">(current)</span></a>
+      </li>
     </ul>
   </div> 
 
+ 
   <div class="btn-group dropleft">
   <button type="button" class="btn  dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
    Config
@@ -311,6 +363,51 @@ if(isset($_GET['action']) && $_GET['action'] == "logout"){
 
 
 
+<div class="modal fade " aria-hidden="true" data-backdrop="static" data-keyboard="false" id="notificationModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Send Notification</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+
+ 
+      <form action="" method="get" >
+      <div class="form-group pt-3" align="center">
+
+
+      <div>
+      <input required="true" type="text" class="form-control" style="width:300px;" id="title" name="title"
+       aria-describedby="title" placeholder="Title">
+      </div>
+
+      <div class="pt-3">
+      <input required="true" type="text" class="form-control" style="width:300px;" id="message" name="message"
+       aria-describedby="message" placeholder="Message">
+      </div>
+   
+  </div>
+ 
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+      
+        <button type="submit" class="btn btn-dark" value = "topic"  name="push_type" id="push_type">Send</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+      </div>
+      </form>
+
+    </div>
+   
+  </div>
+</div>
+
+-->
 
 <div class="modal fade " aria-hidden="true" data-backdrop="static" data-keyboard="false" id="myModal">
     <div class="modal-dialog modal-lg">
@@ -365,12 +462,6 @@ if(isset($_GET['action']) && $_GET['action'] == "logout"){
 
 <?php
 
-/*
-if(isset($_GET['action']) && $_GET['action'] == "signout"){
-  session_destroy();
-  header("Location: login.php");
-}
 
-*/
 
 ?>
