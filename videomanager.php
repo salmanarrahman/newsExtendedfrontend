@@ -10,6 +10,9 @@ if($_SESSION['login'] == false){
 
 $db = new Database();
 $user = new User();
+
+
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -24,6 +27,7 @@ $user = new User();
     <title>News Extended</title>
   </head>
   <body>
+ 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="home.php">News Extended</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,6 +60,7 @@ $user = new User();
 
 
 <?php
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addAllButton'])){
     $permited = array('jpg','jpeg','png');
@@ -127,8 +132,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addAllButton'])){
 
   <?php
    try{
-            $sql = "SELECT * FROM video";
+            $sql = "SELECT * FROM video WHERE dateID = :datee";
             $query = $db->conn->prepare($sql);
+            $query->bindValue(":datee",$_SESSION['dateid']);
             $query->execute();
             $query->setFetchMode(PDO::FETCH_ASSOC);
              while ($row = $query->fetch()){

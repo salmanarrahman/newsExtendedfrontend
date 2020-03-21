@@ -353,9 +353,21 @@ if(isset($_GET['action']) && $_GET['action'] == "logout"){
 
 <div class="card-deck pt-5">
 <div class="card bg-light ml-5 " style="max-width: 17rem;">
-  <div class="card-body">
-  <h5 class="card-title"><a style="color:black;"  href="videomanager.php">Video Manager</a></h5>
-    <p class="card-text">12 video in list</p>
+<div class="card-body">
+  <h5 class="card-title"><a style="color:black;"  href="videomanager.php">Videos</a></h5>
+
+      <?php
+
+          $columnNumber =   $user->getvideoscount();
+      if ($columnNumber != 0){
+          echo "<p class=\"card-text\">".$columnNumber." Videos for today</p>";
+      }else{
+          echo "<p class=\"card-text\">Please add some breaking news!</p>";
+      }
+
+      ?>
+
+
 </div>
 </div>
 </div>

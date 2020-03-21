@@ -69,8 +69,29 @@ class User{
         }
     }
 
-    //get the fucing count of breaking news
-    public function getbreaknewscount(){
+     //get the fucing count of videos
+     public function getvideoscount(){
+        try{
+            $id = $_SESSION['dateid'];
+
+            $sql = "SELECT COUNT(title) FROM video WHERE dateid = :date_id";
+            $query = $this->db->conn->prepare($sql);
+            //     $query -> bindVlue(":date_id",$dateid);
+            $query->bindValue(':date_id',$id);
+            $query->execute();
+            $columnNumber = $query->fetchColumn();
+
+
+            return $columnNumber;
+
+        }catch (PDOException $e){
+            return $e->getMessage();
+        }
+
+    }
+
+      //get the fucing count of breaking news
+      public function getbreaknewscount(){
         try{
             $id = $_SESSION['dateid'];
 
@@ -89,6 +110,8 @@ class User{
         }
 
     }
+
+
 
     //add category
     public function addCategory($data) {
